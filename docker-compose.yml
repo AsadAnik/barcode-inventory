@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+  # region Backend Layer
+  server-api:
+    build:
+      context: ./server-api
+      dockerfile: Dockerfile
+    container_name: barcode-inventory-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb # MongoDB service dependency
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/barcodeInventory
+    networks:
+      - barcode-inventory-network
+    volumes:
+      - ./server-api:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  # region Frontend Layer
+  client-web:
+    build:
+      context: ./client-web
+      dockerfile: Dockerfile
+    container_name: barcode-inventory-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server-api # Backend service dependency
+    networks:
+      - barcode-inventory-network
+    restart: unless-stopped
+    # Add a delay before starting the frontend
+    command: /bin/sh -c "sleep 5 && npm run start"
+
+
+  # region MongoDB Layer
+  mongodb:
+    image: mongo:latest
+    container_name: barcode-inventory-mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - barcode-inventory-network
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+
+# region Network Layer
+networks:
+  barcode-inventory-network:
+
+# region Volume Layer
+volumes:
+  mongodb-data:
