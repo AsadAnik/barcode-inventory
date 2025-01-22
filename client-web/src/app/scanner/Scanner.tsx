@@ -21,6 +21,7 @@ const BarcodeScanner: React.FC = () => {
      * This will fetch the details for the product
      * @param barcode 
      */
+    // region Fetch Product Details
     const fetchProductDetails = async (barcode: string) => {
         setLoading(true);
         setError("");
@@ -42,6 +43,7 @@ const BarcodeScanner: React.FC = () => {
         }
     };
 
+    // region Save to Uncategorized
     const saveToUncategorized = async () => {
         if (!product) return;
 
@@ -59,6 +61,7 @@ const BarcodeScanner: React.FC = () => {
             }
 
             alert("Product saved to Uncategorized successfully!");
+            
         } catch (err) {
             alert(
                 err instanceof Error

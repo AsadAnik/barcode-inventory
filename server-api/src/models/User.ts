@@ -2,10 +2,25 @@ import mongoose, { Schema } from 'mongoose';
 
 // region User Schema
 const userSchema = new Schema({
-    name: { type: String, required: false, maxLength: 100 },
-    email: { type: String, required: true, trim: true, unique: true },
-    password: { type: String, required: true, minLength: 7 },
-    refreshToken: { type: String },
+    name: {
+        type: String,
+        required: false,
+        maxLength: 100
+    },
+    email: { 
+        type: String, 
+        required: true, 
+        trim: true, 
+        unique: true 
+    },
+    password: { 
+        type: String, 
+        required: true, 
+        minLength: 7 
+    },
+    refreshToken: { 
+        type: String 
+    },
 }, {
     timestamps: true
 });

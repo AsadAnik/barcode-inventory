@@ -1,15 +1,17 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authRoutes, userRoutes } from '../routes';
+import { authRoutes, userRoutes, productRoutes } from '../routes';
 import { AuthMiddleware } from '../middlewares';
 
 const router: Router = Router();
 
 /**
  * ---- Routes For API Version 01 -----
- * Now moved API Rutes from /api/v1/ to /api/
+ * @param {Router} router
+ * @return {Router}
  */
-router.use('/api/v1/auth', authRoutes);
-router.use('/api/v1/user', AuthMiddleware.verifyUser, userRoutes);
+router.use('/api/auth', authRoutes);
+router.use('/api/users', AuthMiddleware.verifyUser, userRoutes);
+router.use('/api/products', AuthMiddleware.verifyUser, productRoutes);
 
 /**
  * ---- Health Check for the application here ----
