@@ -1,44 +1,134 @@
-'use client';
-import React, { useState } from 'react';
+"use client";
 
-const BarcodeScanner = () => {
-  const [barcode, setBarcode] = useState('');
-  const [product, setProduct] = useState<any>(null);
+import React, { useState } from "react";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
-  const fetchProduct = async () => {
+interface Product {
+  name: string;
+  barcode: string;
+  [key: string]: any;
+}
+
+const BarcodeScanner: React.FC = () => {
+  const [scannedBarcode, setScannedBarcode] = useState<string>("");
+  const [product, setProduct] = useState<Product | null>(null);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [scannerActive, setScannerActive] = useState<boolean>(true);
+
+  const fetchProductDetails = async (barcode: string) => {
+    setLoading(true);
+    setError("");
     try {
-      const response = await fetch(`https://products-test-aci.onrender.com/product/${barcode}`);
-      const data = await response.json();
+      const response = await fetch(
+        `https://products-test-aci.onrender.com/product/${barcode}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Product not found!");
+      }
+
+      const data: Product = await response.json();
       setProduct(data);
-    } catch (error) {
-      console.error("Error fetching product details", error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error fetching product details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveToUncategorized = async () => {
+    if (!product) return;
+
+    try {
+      const response = await fetch("/api/saveProduct", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...product, category: "Uncategorized" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save product.");
+      }
+
+      alert("Product saved to Uncategorized successfully!");
+    } catch (err) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while saving the product."
+      );
     }
   };
 
   return (
     <div className="h-screen p-6 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Barcode Scanner</h1>
-      <div className="mb-6">
-        <input
-          type="text"
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          placeholder="Enter Barcode"
-          className="px-4 py-2 border border-gray-300 rounded w-full mb-4"
-        />
+      <h1 className="text-2xl font-bold mb-6 text-center">Barcode Scanner</h1>
+
+      <div className="flex flex-col items-center mb-6">
+        {/* Toggle Scanner */}
         <button
-          onClick={fetchProduct}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+          onClick={() => setScannerActive((prev) => !prev)}
+          className={`px-4 py-2 rounded mb-4 ${
+            scannerActive ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+          } text-white`}
         >
-          Fetch Product
+          {scannerActive ? "Stop Scanner" : "Start Scanner"}
         </button>
+
+        {/* Scanner Component */}
+        {scannerActive && (
+          <div className="w-full max-w-md">
+            <BarcodeScannerComponent
+              onUpdate={(err: unknown, result: any): void => {
+
+                // this is result..
+                console.log('RESULT IS HERE - ', result);
+                console.log('error is here - ', err);
+
+                if (result) {
+                  const detectedBarcode = result.text;
+                  setScannedBarcode(detectedBarcode);
+                  fetchProductDetails(detectedBarcode);
+                  setScannerActive(false); // Stop scanner after successful scan
+                } else if (err) {
+                  setError("Scanning error. Please try again.");
+                }
+              }}
+            />
+          </div>
+        )}
       </div>
+
+      {/* Display Detected Barcode */}
+      {scannedBarcode && (
+        <p className="text-lg font-semibold text-gray-700 mb-4 text-center">
+          Detected Barcode: <span className="text-blue-500">{scannedBarcode}</span>
+        </p>
+      )}
+
+      {/* Error Message */}
+      {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+
+      {/* Loading Indicator */}
+      {loading && <p className="text-center text-gray-600">Fetching product details...</p>}
+
+      {/* Product Details */}
       {product && (
-        <div className="p-4 bg-white rounded shadow">
+        <div className="p-4 bg-white rounded shadow mt-6">
           <h2 className="text-lg font-bold mb-2">Product Details</h2>
-          <p><strong>Name:</strong> {product.name}</p>
-          <p><strong>Barcode:</strong> {product.barcode}</p>
-          <button className="px-4 py-2 bg-green-500 text-white rounded mt-4 hover:bg-green-600">
+          <p>
+            <strong>Name:</strong> {product.name}
+          </p>
+          <p>
+            <strong>Barcode:</strong> {product.barcode}
+          </p>
+          <button
+            onClick={saveToUncategorized}
+            className="px-4 py-2 bg-green-500 text-white rounded mt-4 hover:bg-green-600"
+          >
             Save to Uncategorized
           </button>
         </div>
