@@ -12,6 +12,8 @@ class ProductService {
     /**
      * CREATE PRODUCT SERVICE
      * Service for create new Product
+     * Create product by fetching details by API
+     * And then create product into database with user id and category default
      * @param productData 
      * @param userId 
      * @returns 

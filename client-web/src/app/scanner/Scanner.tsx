@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
+import { usePostProduct } from '@/hooks';
+import toast from 'react-hot-toast';
 
 interface Product {
     name: string;
@@ -15,6 +17,11 @@ const BarcodeScanner: React.FC = () => {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [scannerActive, setScannerActive] = useState<boolean>(true);
+    const [postProductToServerAction, productServerData]: any = usePostProduct();
+
+    useEffect(() => {
+        fetchProductDetails('1234567890138');    
+    }, []);
 
     /**
      * FETCHING PRODUCT DETAILS
@@ -23,24 +30,7 @@ const BarcodeScanner: React.FC = () => {
      */
     // region Fetch Product Details
     const fetchProductDetails = async (barcode: string) => {
-        setLoading(true);
-        setError("");
-        try {
-            const response = await fetch(
-                `https://products-test-aci.onrender.com/product/${barcode}`
-            );
-
-            if (!response.ok) {
-                throw new Error("Product not found!");
-            }
-
-            const data: Product = await response.json();
-            setProduct(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Error fetching product details.");
-        } finally {
-            setLoading(false);
-        }
+      await postProductToServerAction(barcode);
     };
 
     // region Save to Uncategorized
@@ -60,13 +50,12 @@ const BarcodeScanner: React.FC = () => {
                 throw new Error("Failed to save product.");
             }
 
-            alert("Product saved to Uncategorized successfully!");
-            
+            toast.success("Product saved to Uncategorized successfully!");
+
         } catch (err) {
-            alert(
-                err instanceof Error
-                    ? err.message
-                    : "An unknown error occurred while saving the product."
+            toast.error(err instanceof Error
+                ? err.message
+                : "An unknown error occurred while saving the product."
             );
         }
     };

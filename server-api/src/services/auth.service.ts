@@ -72,7 +72,6 @@ class AuthService {
 
             // store..
             const createdUser = await this.userModelRepository.create(userInfo);
-            console.log(`Created user ${createdUser}`);
             await createdUser.save();
 
             return { success: true, message: 'Registered User', user: createdUser }

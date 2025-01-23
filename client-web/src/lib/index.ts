@@ -1,0 +1,1 @@
+export { default as axiosApiClient } from './axios.interceptor';

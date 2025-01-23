@@ -4,7 +4,7 @@ import app from './app/app';
 
 const HOST: string = String(process.env.HOST || '0.0.0.0');
 const PORT: number = Number(process.env.PORT || 8080);
-const DB_URI: string =  String(process.env.MONGO_URI || 'mongodb://localhost:27017/socialMeta');
+const DB_URI: string =  String(process.env.MONGO_URI || 'mongodb://localhost:27017/barcode-inventory');
 
 // Node server..
 const server: http.Server = http.createServer(app);
