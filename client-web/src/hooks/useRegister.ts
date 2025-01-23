@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { axiosApiClient } from '@/lib';
 import toast from 'react-hot-toast';
 
-const useLogin = () => {
-    const [data, setData] = useState<{result: any, loading: boolean, error: boolean}>({
+const useRegister = () => {
+    const [data, setData] = useState<{ result: any, loading: boolean, error: boolean }>({
         result: null,
         loading: false,
         error: false,
     });
 
     type UserInfoType = {
+        name?: string;
         email: string;
         password: string;
     };
@@ -19,13 +20,13 @@ const useLogin = () => {
      * This will login the user
      * @param userInfo 
      */
-    const loginFunc = async (userInfo: UserInfoType): Promise<void> => {
+    const registerFunc = async (userInfo: UserInfoType): Promise<void> => {
         setData({ ...data, loading: true });
 
         try {
-            const response = await axiosApiClient.post('/auth/login', userInfo);
+            const response = await axiosApiClient.post('/auth/register', userInfo);
             console.log('RESPONSE FOR LOGIN HERE - ', response);
-            toast.success('Login successful');
+            toast.success('Registered successful');
             setData({ ...data, result: response.data, loading: false, error: false });
 
         } catch (error) {
@@ -34,7 +35,7 @@ const useLogin = () => {
         }
     }
 
-    return [loginFunc, data];
+    return [registerFunc, data];
 };
 
-export default useLogin;
+export default useRegister;

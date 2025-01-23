@@ -1,9 +1,11 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useLogin } from '@/hooks';
 
 const Login = () => {
     const router = useRouter();
+    const [loginFunc, data] = useLogin();
 
 
     return (
@@ -39,6 +41,7 @@ const Login = () => {
                     <button
                         type="submit"
                         className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+                        disabled={data.loading}
                     >
                         Login
                     </button>

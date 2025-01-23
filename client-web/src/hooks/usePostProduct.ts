@@ -1,5 +1,4 @@
-'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -15,7 +14,7 @@ const usePostProduct = () => {
      * This will post the product to the server
      * @param barcode 
      */
-    const postProductToServer = async (barcode: string = '1234567890138'): Promise<any> => {
+    const postProductToServer = async (barcode: string = '1234567890138'): Promise<void> => {
         try {
             setProduct({ ...product, loading: true });
             const accessToken: string = localStorage.getItem('accessToken') ?? '';
