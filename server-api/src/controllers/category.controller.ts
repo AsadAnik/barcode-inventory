@@ -10,19 +10,30 @@ class CategoryController {
 
     /**
      * ---- Get Categories Controller ----
+     * This will get all categories..
      * @param req 
      * @param res 
      * @param next 
+     * @returns 
      */
-    public getCategories = async (req: Request, res: Response, next: NextFunction) => {
+    public getKanban = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = (req as any).user._id;
-            const categories = await this.categoryService.getCategories(userId);
+            const kanbanList = await this.categoryService.getProductsKanban(userId);
+            if (!kanbanList || Object.keys(kanbanList).length === 0) {
+                // If no categories or products found, send 404 response
+                res.status(404).json({
+                    success: false,
+                    message: 'No categories found',
+                });
+            }
 
+            // Respond with the structured Kanban list
             res.status(200).json({
                 success: true,
-                categories,
+                kanbanList,
             });
+
 
         } catch (error) {
             next(error);
@@ -63,7 +74,7 @@ class CategoryController {
     public updateCategory = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const categoryId = req.params.id;
-            const categoryInfo =  req.body;
+            const categoryInfo = req.body;
 
             const category = await this.categoryService.updateCategory(categoryId, categoryInfo);
             if (!category) res.status(400).json({

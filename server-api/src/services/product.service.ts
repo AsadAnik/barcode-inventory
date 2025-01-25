@@ -1,12 +1,14 @@
-import { Product } from '../models';
+import { Product, Category } from '../models';
 import { IProduct } from '../types';
 import axios from 'axios';
 
 class ProductService {
     private readonly productModelRespository: typeof Product;
+    private readonly categoryModelRepository: typeof Category; 
 
-    constructor(productModelRespository: typeof Product = Product) {
+    constructor(productModelRespository: typeof Product = Product, categoryModelRepository: typeof Category = Category) {
         this.productModelRespository = productModelRespository;
+        this.categoryModelRepository = categoryModelRepository;
     }
 
     /**
@@ -19,7 +21,7 @@ class ProductService {
      * @returns 
      */
     // region Create Product
-    public async createProduct(userBarcode: string, userId: string): Promise<any> {
+    public async createProduct(userBarcode: string, userId: string) {
         try {
             const productsFetchAPI = process.env.PRODUCT_FETCH_API || 'https://products-test-aci.onrender.com/product';
             const fetchProductResponse = await axios.get(`${productsFetchAPI}/${userBarcode}`);
@@ -37,11 +39,14 @@ class ProductService {
             const { barcode, description } = productData.product;
             const name = description?.split(' ')[0];
 
+            // Ensure "Uncategoorized" category exits for the user
+            const uncategorizedCategory = await this.categoryModelRepository.create({ name: 'Uncategorized', user: userId });
+
             const product = new Product({
                 name,
                 barcode,
                 description,
-                category: null,
+                category: uncategorizedCategory._id,
                 user: userId,
             });
 
@@ -49,6 +54,29 @@ class ProductService {
 
         } catch (error) {
             console.error(`Error occured while creating product: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * UPDATE PRODUCT CATEGORY SERVICE
+     * Service for update product category
+     * @param productId 
+     * @param categoryId 
+     * @returns 
+     */
+    public async updateProductsCategory(productId: string, categoryId: string): Promise<IProduct> {
+        try {
+            const product = await this.productModelRespository.findById(productId);
+            if (!product) {
+                throw new Error('Product not found');
+            }
+
+            product.category = categoryId;
+            return await product.save();
+
+        } catch (error) {
+            console.error(`Error occured while updating product: ${error}`);
             throw error;
         }
     }

@@ -9,7 +9,7 @@ const HomePage = () => {
         <Link href="/scanner">
           <span className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600">Go to Barcode Scanner</span>
         </Link>
-        <Link href="/dashboard">
+        <Link href="/kanban">
           <span className="px-6 py-3 bg-green-500 text-white rounded hover:bg-green-600">Go to Kanban Board</span>
         </Link>
       </div>

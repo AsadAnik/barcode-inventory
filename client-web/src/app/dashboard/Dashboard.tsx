@@ -1,22 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFetchProducts, useAddCategory } from '@/hooks';
 
-const initialColumns = {
-  Uncategorized: [],
-  "In Progress": [],
-  Completed: [],
-};
+// const initialColumns = {
+//   Uncategorized: [],
+//   "In Progress": [],
+//   Completed: [],
+// };
 
 export default function KanbanBoard(): React.ReactNode {
-  const [columns, setColumns] = useState<typeof initialColumns>(initialColumns);
-  const [newItem, setNewItem] = useState("");
+  // const [newItem, setNewItem] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [data, loading, error, fetchProducts] = useFetchProducts();
   const { addCategory, loading: categoryLoading, error: categoryError } = useAddCategory();
+  const [columns, setColumns] = useState<any>(data);
 
-  console.log('DATA HERE - ', data);
+  console.log('DATA HERE - ', columns);
+
+  useEffect(() => {
+    setColumns(data);
+  }, [data]);
 
   // region Add New Category
   const addNewCategory = async() => {
@@ -25,8 +29,8 @@ export default function KanbanBoard(): React.ReactNode {
     if (categoryName && !data.hasOwnProperty(categoryName)) {
       try {
         await addCategory(categoryName);
-        setColumns((prev) => ({ ...prev, [categoryName]: [] }));
-        fetchProducts(); // refresh the products
+        setColumns((prev: any) => ({ ...prev, [categoryName]: [] }));
+        // fetchProducts(); // refresh the products
         setNewCategory("");
 
       } catch (error) {
@@ -97,7 +101,7 @@ export default function KanbanBoard(): React.ReactNode {
 
       {/* Kanban board */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {Object.entries(data).map(([columnName, items]) => (
+        {Object.entries(columns).map(([columnName, items]) => (
           <div
             key={columnName}
             onDragOver={handleDragOver}

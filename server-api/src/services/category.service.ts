@@ -1,5 +1,5 @@
 import { Category } from '../models';
-import { ICategory, ICategoryCreate, ICategoryUpdate } from '../types';
+import { ICategoryCreate, ICategoryUpdate } from '../types';
 import ProductService from './product.service';
 
 class CategoryService {
@@ -19,10 +19,10 @@ class CategoryService {
      * @returns 
      */
     // region Create Category
-    public async createCategory(categoryData: ICategoryCreate, userId: string): Promise<ICategory> {
+    public async createCategory(categoryData: ICategoryCreate, userId: string) {
         try {
-            const category = await this.categoryModelRepository.create({...categoryData, user: userId });
-            return category as ICategory;
+            const category = await this.categoryModelRepository.create({ ...categoryData, user: userId });
+            return category;
 
         } catch (error) {
             console.error(`Error occcured while register user: ${error}`);
@@ -31,21 +31,59 @@ class CategoryService {
     }
 
     /**
-     * GET CATEGORIES
-     * Gets all categories.
+     * GET FULL KANBAN LIST
+     * Categoies with Products
+     * Aggregated products with each categories
      * @param userId 
      * @returns 
      */
-    // region Get Categories
-    public async getCategories(userId: string): Promise<ICategory[]> {
+    public async getProductsKanban(userId: string): Promise<any> {
         try {
-            const categories = await this.categoryModelRepository.find({ user: userId });
-            return categories as ICategory[];
+            const kanbanList = await this.categoryModelRepository.aggregate([
+                {
+                    $match: { user: userId },
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'category',
+                        as: 'products',
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        products: {
+                            $map: {
+                                input: '$products',
+                                as: 'product',
+                                in: {
+                                    _id: '$$product._id',
+                                    name: '$$product.name',
+                                    status: '$$product.status',
+                                },
+                            },
+                        },
+                    },
+                },
+            ]);
+
+
+            // Structure the response into an object with categories as keys and product arrays as values
+            const transformedKanbanList = kanbanList.reduce((acc: any, category: any) => {
+                acc[category.name] = category.products; // Maps category name to the products array
+                return acc;
+            }, {});
+
+            // console.log(kanbanList);
+            return transformedKanbanList;
 
         } catch (error) {
             console.error(`Error occcured while register user: ${error}`);
             throw error
-        } 
+        }
     }
 
 
@@ -57,10 +95,10 @@ class CategoryService {
      * @returns 
      */
     // region Update Category
-    public async updateCategory(categoryId: string, categoryData: ICategoryUpdate): Promise<ICategory> {
+    public async updateCategory(categoryId: string, categoryData: ICategoryUpdate) {
         try {
             const category = await this.categoryModelRepository.findByIdAndUpdate(categoryId, categoryData, { new: true });
-            return category as ICategory;
+            return category;
 
         } catch (error) {
             console.error(`Error occcured while register user: ${error}`);

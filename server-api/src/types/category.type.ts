@@ -2,7 +2,8 @@
  * Category model interface
  */
 interface ICategory {
-    id: number;
+    id?: string;
+    _id?: string;
     name: string;
     createdAt?: Date;
     updatedAt?: Date;

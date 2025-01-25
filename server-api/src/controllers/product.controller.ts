@@ -26,7 +26,7 @@ class ProductController {
                 success: true,
                 product,
             });
-            
+
         } catch (error) {
             next(error);
         }
@@ -53,7 +53,35 @@ class ProductController {
                 success: true,
                 products,
             });
-            
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * ---- Update Product Controller ----
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    public updateProductsCategory = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const productId = req.params.id;
+            const categoryId = req.body.categoryId;
+
+            const updatedProduct = await this.productService.updateProductsCategory(productId, categoryId);
+            if (!updatedProduct) res.status(400).json({
+                success: false,
+                message: 'Product Cannot be updated'
+            });
+
+            res.status(200).json({
+                success: true,
+                message: 'Product updated successfully',
+                updatedProduct,
+            });
+
         } catch (error) {
             next(error);
         }

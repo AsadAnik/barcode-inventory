@@ -6,6 +6,13 @@ const router = express.Router();
 // Object instance for UserController Class..
 const categoryController = new CategoryController();
 
+
+/**
+ * ---- Get Kanban Route ----
+ * This will get all categories with aggregated products..
+ */
+router.get('/kanban', categoryController.getKanban);
+
 /**
  * ---- Get Categories Route ----
  * This will get all categories..
@@ -14,7 +21,6 @@ const categoryController = new CategoryController();
  * This will create a new category..
  */
 router.route('/')
-    .get(categoryController.getCategories)
     .post(categoryController.createCategory);
 
 /**
