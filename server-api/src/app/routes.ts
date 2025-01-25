@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { authRoutes, userRoutes, productRoutes } from '../routes';
+import { authRoutes, userRoutes, productRoutes, categoryRoutes } from '../routes';
 import { AuthMiddleware } from '../middlewares';
 
 const router: Router = Router();
@@ -12,6 +12,7 @@ const router: Router = Router();
 router.use('/api/auth', authRoutes);
 router.use('/api/users', AuthMiddleware.verifyUser, userRoutes);
 router.use('/api/products', AuthMiddleware.verifyUser, productRoutes);
+router.use('/api/categories', AuthMiddleware.verifyUser, categoryRoutes);
 
 /**
  * ---- Health Check for the application here ----
