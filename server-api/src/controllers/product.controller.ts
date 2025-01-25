@@ -61,6 +61,7 @@ class ProductController {
 
     /**
      * ---- Update Product Controller ----
+     * This created for the Kanban feature about drag and drop to another category
      * @param req 
      * @param res 
      * @param next 

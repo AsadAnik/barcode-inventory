@@ -70,19 +70,21 @@ class CategoryService {
                 },
             ]);
 
-
-            // Structure the response into an object with categories as keys and product arrays as values
+            // Structure the response into an object with categoryId, name, and products
             const transformedKanbanList = kanbanList.reduce((acc: any, category: any) => {
-                acc[category.name] = category.products; // Maps category name to the products array
+                acc[category.name] = {
+                    _id: category._id,
+                    name: category.name,
+                    products: category.products,
+                };
                 return acc;
             }, {});
 
-            // console.log(kanbanList);
             return transformedKanbanList;
 
         } catch (error) {
-            console.error(`Error occcured while register user: ${error}`);
-            throw error
+            console.error(`Error occurred while getting Kanban list: ${error}`);
+            throw error;
         }
     }
 

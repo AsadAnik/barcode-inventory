@@ -22,7 +22,14 @@ router.route('/')
  * This will delete a product..
  */
 router.route('/:id')
-    .patch(productController.updateProductsCategory)
     .delete(productController.deleteProduct);
+
+
+/**
+ * ---- Update Product's Category Route ----
+ * This will update the category of a product..
+ * This created for the Kanban feature about drag and drop to another category..
+ */
+router.patch('/:id/update-category', productController.updateProductsCategory);
 
 export default router;

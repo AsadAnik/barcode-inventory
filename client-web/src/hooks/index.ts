@@ -5,3 +5,4 @@ export { default as useLogout } from './useLogout';
 export { default as useFetchProducts } from './useFetchProducts';
 export { default as useAddCategory } from './useAddCategory';
 export { default as useFetchKanban } from './useFetchKanban';
+export { default as useUpdateProductCategory } from './useUpdateProductCategory';
