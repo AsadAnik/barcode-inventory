@@ -16,7 +16,7 @@ const useLogout = () => {
         document.cookie = 'refreshToken=; Path=/; Max-Age=0;';
     };
 
-    return { logout };
+    return { logout, accessToken };
 };
 
 export default useLogout;

@@ -62,7 +62,8 @@ class CategoryService {
                                 in: {
                                     _id: '$$product._id',
                                     name: '$$product.name',
-                                    status: '$$product.status',
+                                    description: '$$product.description',
+                                    barcode: '$$product.barcode',
                                 },
                             },
                         },

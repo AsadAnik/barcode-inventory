@@ -63,6 +63,7 @@ const BarcodeScanner: React.FC = () => {
         }
     };
 
+    // region UI
     return (
         <div className="h-screen p-6 bg-gray-100">
             <h1 className="text-2xl font-bold mb-6 text-center">Barcode Scanner</h1>
