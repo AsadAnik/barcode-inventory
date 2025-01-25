@@ -12,5 +12,16 @@ const productController = new ProductController();
  */
 router.post('/', productController.createProduct);
 
+/**
+ * ---- Get Products Route ----
+ * This will get all products..
+ */
+router.get('/', productController.getProducts);
+
+/**
+ * ---- Delete Product Route ----
+ * This will delete a product..
+ */
+router.delete('/:id', productController.deleteProduct);
 
 export default router;

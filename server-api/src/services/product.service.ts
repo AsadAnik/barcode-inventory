@@ -18,10 +18,12 @@ class ProductService {
      * @param userId 
      * @returns 
      */
-    // region Create Product Service
+    // region Create Product
     public async createProduct(userBarcode: string, userId: string): Promise<any> {
         try {
-            const fetchProductResponse = await axios.get(`https://products-test-aci.onrender.com/product/${userBarcode}`);
+            const productsFetchAPI = process.env.PRODUCT_FETCH_API || 'https://products-test-aci.onrender.com/product';
+            const fetchProductResponse = await axios.get(`${productsFetchAPI}/${userBarcode}`);
+
             if (!fetchProductResponse) {
                 throw new Error('Failed to fetch product data');
             }
@@ -55,10 +57,55 @@ class ProductService {
      * GET PRODUCTS SERVICE
      * Service for get all products
      */
-    public async getProducts(): Promise<IProduct[]> {
+    // region Get Products
+    public async getProducts(categoryId: string, userId: string): Promise<IProduct[]> {
         try {
-            const products = await this.productModelRespository.find().populate('category');
+
+            let filter: any = { user: userId };
+
+            if (categoryId && categoryId !== 'null') {
+                filter = {...filter, category: categoryId };
+
+            } else if (categoryId === 'null') {
+                filter.category = { $exists: false };
+            }
+
+            const products = await this.productModelRespository.find(filter).sort({ createdAt: -1 });
             return products as IProduct[];
+
+        } catch (error) {
+            console.error(`Error occured while getting products: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * DELETE PRODUCT SERVICE
+     * Service for get product by id
+     * @param productId 
+     * @returns 
+     */
+    //  region Delete Product
+    public async deleteProduct(productId: string): Promise<any> {
+        try {
+            return await this.productModelRespository.findByIdAndDelete(productId);
+
+        } catch (error) {
+            console.error(`Error occured while getting products: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * DELETE PRODUCT BY CATEGORY SERVICE
+     * Service for get product by id
+     * @param categoryId 
+     * @returns 
+     */
+    // region Delete By Category
+    public async deleteProductByCategory(categoryId: string): Promise<any> {
+        try {
+            return await this.productModelRespository.deleteMany({ category: categoryId });
 
         } catch (error) {
             console.error(`Error occured while getting products: ${error}`);

@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { axiosApiClient } from '@/lib';
 import toast from 'react-hot-toast';
 
+
 const useLogin = () => {
-    const [data, setData] = useState<{result: any, loading: boolean, error: boolean}>({
+    const [data, setData] = useState<{ result: any, loading: boolean, error: boolean }>({
         result: null,
         loading: false,
         error: false,
@@ -24,9 +25,12 @@ const useLogin = () => {
 
         try {
             const response = await axiosApiClient.post('/auth/login', userInfo);
-            console.log('RESPONSE FOR LOGIN HERE - ', response);
-            toast.success('Login successful');
-            setData({ ...data, result: response.data, loading: false, error: false });
+            
+            if (response.status === 200) {
+                const { data } = response.data;
+                setData({ ...data, result: data.user, loading: false, error: false });
+                toast.success('Login successful');
+            }
 
         } catch (error) {
             setData({ ...data, loading: false, error: true });

@@ -38,6 +38,11 @@ class AuthController {
         try {
             const authLogin = await this.authService.loginUser({ email: reqBody.email, password: reqBody.password });
             if (!authLogin.success) return res.status(400).json(authLogin);
+
+            // Set Cookie for access token and refresh token
+            res.cookie('accessToken', authLogin.data.accessToken, { httpOnly: true });
+            res.cookie('refreshToken', authLogin.data.refreshToken, { httpOnly: true });
+
             res.status(200).json(authLogin);
 
         } catch (error) {

@@ -1,9 +1,12 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useRegister } from '@/hooks';
 
 const Register = () => {
     const router = useRouter();
+
+    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">

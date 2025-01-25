@@ -23,6 +23,7 @@ const BarcodeScanner: React.FC = () => {
         fetchProductDetails('1234567890138');    
     }, []);
 
+    
     /**
      * FETCHING PRODUCT DETAILS
      * This will fetch the details for the product
