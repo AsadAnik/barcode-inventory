@@ -13,9 +13,7 @@ const productController = new ProductController();
  * ---- Get Products Route ----
  * This will get all products..
  */
-router.route('/')
-    .post(productController.createProduct)
-    .get(productController.getProducts);
+router.route('/').post(productController.createProduct);
 
 /**
  * ---- Delete Product Route ----

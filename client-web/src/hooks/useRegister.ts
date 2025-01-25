@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { axiosApiClient } from '@/lib';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 const useRegister = () => {
+    const router = useRouter();
     const [data, setData] = useState<{ result: any, loading: boolean, error: boolean }>({
         result: null,
         loading: false,
@@ -28,6 +30,7 @@ const useRegister = () => {
             console.log('RESPONSE FOR LOGIN HERE - ', response);
             toast.success('Registered successful');
             setData({ ...data, result: response.data, loading: false, error: false });
+            router.push('/login');
 
         } catch (error) {
             setData({ ...data, loading: false, error: true });

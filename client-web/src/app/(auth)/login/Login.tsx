@@ -37,10 +37,6 @@ const Login = () => {
 
         try {
             await loginFunc(loginInfo);
-            if (data.result) {
-                // toast.success('Login successful');
-                router.push('/');
-            }
 
         } catch (error) {
             console.error('Login error - ', error);

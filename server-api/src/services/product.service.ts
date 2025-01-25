@@ -4,7 +4,7 @@ import axios from 'axios';
 
 class ProductService {
     private readonly productModelRespository: typeof Product;
-    private readonly categoryModelRepository: typeof Category; 
+    private readonly categoryModelRepository: typeof Category;
 
     constructor(productModelRespository: typeof Product = Product, categoryModelRepository: typeof Category = Category) {
         this.productModelRespository = productModelRespository;
@@ -26,22 +26,34 @@ class ProductService {
             const productsFetchAPI = process.env.PRODUCT_FETCH_API || 'https://products-test-aci.onrender.com/product';
             const fetchProductResponse = await axios.get(`${productsFetchAPI}/${userBarcode}`);
 
-            if (!fetchProductResponse) {
+            if (!fetchProductResponse || !fetchProductResponse.data) {
                 throw new Error('Failed to fetch product data');
             }
 
-            const productData = fetchProductResponse.data;
+            const productData = fetchProductResponse.data.product;
             if (!productData) {
-                throw new Error('Failed to fetch product data');
+                throw new Error('Failed to fetch product details');
             }
 
-            // Create Product
-            const { barcode, description } = productData.product;
+            // Destructure and prepare product data
+            const { barcode, description } = productData;
             const name = description?.split(' ')[0];
 
-            // Ensure "Uncategoorized" category exits for the user
-            const uncategorizedCategory = await this.categoryModelRepository.create({ name: 'Uncategorized', user: userId });
+            // Check if the "Uncategorized" category exists for the user
+            let uncategorizedCategory = await this.categoryModelRepository.findOne({
+                name: 'Uncategorized',
+                user: userId
+            });
 
+            if (!uncategorizedCategory) {
+                // Create a new "Uncategorized" category for the user if it doesn't exist
+                uncategorizedCategory = await this.categoryModelRepository.create({
+                    name: 'Uncategorized',
+                    user: userId,
+                });
+            }
+
+            // Create and save the product in the "Uncategorized" category
             const product = new Product({
                 name,
                 barcode,
@@ -53,7 +65,7 @@ class ProductService {
             return await product.save();
 
         } catch (error) {
-            console.error(`Error occured while creating product: ${error}`);
+            console.error(`Error occurred while creating product: ${error}`);
             throw error;
         }
     }
@@ -77,32 +89,6 @@ class ProductService {
 
         } catch (error) {
             console.error(`Error occured while updating product: ${error}`);
-            throw error;
-        }
-    }
-
-    /**
-     * GET PRODUCTS SERVICE
-     * Service for get all products
-     */
-    // region Get Products
-    public async getProducts(categoryId: string, userId: string): Promise<IProduct[]> {
-        try {
-
-            let filter: any = { user: userId };
-
-            if (categoryId && categoryId !== 'null') {
-                filter = {...filter, category: categoryId };
-
-            } else if (categoryId === 'null') {
-                filter.category = { $exists: false };
-            }
-
-            const products = await this.productModelRespository.find(filter).sort({ createdAt: -1 });
-            return products as IProduct[];
-
-        } catch (error) {
-            console.error(`Error occured while getting products: ${error}`);
             throw error;
         }
     }

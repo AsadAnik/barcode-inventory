@@ -33,33 +33,6 @@ class ProductController {
     }
 
     /**
-     * ---- Get Product Controller ----
-     * @param req 
-     * @param res 
-     * @param _next 
-     */
-    public getProducts = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const { category } = req.query;
-            const userId = (req as any).user._id;
-
-            const products = await this.productService.getProducts(category as string, userId as string);
-            if (!products) res.status(400).json({
-                success: false,
-                message: 'Product not found'
-            });
-
-            res.status(200).json({
-                success: true,
-                products,
-            });
-
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    /**
      * ---- Update Product Controller ----
      * This created for the Kanban feature about drag and drop to another category
      * @param req 

@@ -1,55 +1,39 @@
-import { useState } from 'react';
-import { axiosApiClient } from '@/lib';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { axiosApiClient } from "@/lib";
+import toast from "react-hot-toast";
 
 const usePostProduct = () => {
     const [product, setProduct] = useState({
-        data: {},
+        data: null,
         loading: false,
         error: null,
     });
 
-    /**
-     * POST PRODUCT TO SERVER
-     * This will post the product to the server
-     * @param barcode 
-     */
-    const postProductToServer = async (barcode: string = '1234567890138'): Promise<void> => {
+    const postProductToServer = async (barcode: string): Promise<void> => {
+        if (product.loading) return; // Prevent overlapping requests
+
+        setProduct((prev) => ({ ...prev, loading: true }));
+        
         try {
-            setProduct({ ...product, loading: true });
-
-            const response = await axiosApiClient.post('/products', { barcode });
-            console.log(`Product Post Response here - ${response}`);
-
+            const response = await axiosApiClient.post("/products", { barcode });
             if (response.status === 200) {
                 setProduct({
-                    data: response.data,
+                    data: response.data.product,
                     loading: false,
                     error: null,
                 });
-
-                toast.success('Product posted successfully!');
+                toast.success("Product posted successfully!");
 
             } else {
-                console.log('Error while posting product:', response);
-                setProduct({ ...product, loading: true });
-                toast.error('Error while posting product');
-                throw new Error('Failed to post product');
+                throw new Error("Failed to post product");
             }
-
-        } catch (error) {
-            console.error('Error fetching product:', error);
-            setProduct({ ...product, loading: true });
-            toast.error('Error while posting product');
-            throw error;
-
-        } finally {
-            setProduct({ ...product, loading: true });
+        } catch (error: any) {
+            setProduct({ data: null, loading: false, error, });
+            toast.error("Error while posting product");
         }
-    }
+    };
 
-    // Return the product data, loading state, and error state
-    return [postProductToServer, product];
-}
+    return [postProductToServer, product] as const;
+};
 
 export default usePostProduct;

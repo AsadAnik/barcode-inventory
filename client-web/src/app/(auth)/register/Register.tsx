@@ -37,10 +37,7 @@ const Register = () => {
         }
 
         try {
-            await registerFunc(registerFunc);
-            if (data.result) {
-                router.push('/login');
-            }
+            await registerFunc(registerInfo);
 
         } catch (error) {
             console.error('Login error - ', error);

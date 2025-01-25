@@ -71,20 +71,25 @@ class CategoryService {
                 },
             ]);
 
-            // Structure the response into an object with categoryId, name, and products
+            // Check if all categories (even those with no products) are being returned
+            if (!kanbanList.length) {
+                throw new Error(`No categories found for user: ${userId}`);
+            }
+
+            // Transform the response: Use category _id instead of name for unique identification
             const transformedKanbanList = kanbanList.reduce((acc: any, category: any) => {
-                acc[category.name] = {
+                acc[category._id] = {
                     _id: category._id,
                     name: category.name,
-                    products: category.products,
+                    products: category.products || [], // Ensure empty product arrays are not omitted
                 };
                 return acc;
             }, {});
 
             return transformedKanbanList;
 
-        } catch (error) {
-            console.error(`Error occurred while getting Kanban list: ${error}`);
+        } catch (error: any) {
+            console.error(`Error occurred while getting Kanban list: ${error.message}`);
             throw error;
         }
     }
