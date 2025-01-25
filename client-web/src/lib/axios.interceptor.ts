@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 // Create Axios instance
 const apiClient = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
@@ -7,11 +8,16 @@ const apiClient = axios.create({
 });
 
 // Intercept request to add access token to headers
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
+  console.log('Cookies:', document.cookie); // Debug cookies
+
   const token = document.cookie
     .split('; ')
     .find((row) => row.startsWith('accessToken='))
     ?.split('=')[1];
+
+  console.log('Access Token:', token); // Debug extracted token
+
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

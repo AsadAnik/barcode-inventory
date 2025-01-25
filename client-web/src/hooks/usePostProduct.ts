@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { axiosApiClient } from '@/lib';
 import toast from 'react-hot-toast';
 
 const usePostProduct = () => {
@@ -17,15 +17,8 @@ const usePostProduct = () => {
     const postProductToServer = async (barcode: string = '1234567890138'): Promise<void> => {
         try {
             setProduct({ ...product, loading: true });
-            const accessToken: string = localStorage.getItem('accessToken') ?? '';
-            const productAPIEndpoint: string = `${process.env.NEXT_PUBLIC_API_URL}/products`;
-            const response = await axios.post(productAPIEndpoint, { barcode }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-            });
 
+            const response = await axiosApiClient.post('/products', { barcode });
             console.log(`Product Post Response here - ${response}`);
 
             if (response.status === 200) {
@@ -34,6 +27,7 @@ const usePostProduct = () => {
                     loading: false,
                     error: null,
                 });
+
                 toast.success('Product posted successfully!');
 
             } else {

@@ -10,7 +10,7 @@ const useRegister = () => {
     });
 
     type UserInfoType = {
-        name?: string;
+        name: string;
         email: string;
         password: string;
     };
@@ -31,7 +31,7 @@ const useRegister = () => {
 
         } catch (error) {
             setData({ ...data, loading: false, error: true });
-            toast.error('Invalid email or password');
+            toast.error('Cant register, try again');
         }
     }
 
