@@ -43,6 +43,14 @@ export default function KanbanBoard(): React.ReactNode {
         event.preventDefault();
     };
 
+    /**
+     * HANDLE DROP
+     * This will handle the drop event
+     * And then update the product category with categoryId
+     * Send the API to update products category
+     * @param event 
+     * @param toCategoryId 
+     */
     // region Handle Drop
     const handleDrop = async (event: React.DragEvent, toCategoryId: string) => {
         event.preventDefault();
@@ -51,16 +59,14 @@ export default function KanbanBoard(): React.ReactNode {
         // We can getting the productId and categoryId from the transferData
         // But as for categoryId, we will be getting by property..
         const { item: productId, from: fromCategoryId } = JSON.parse(transferData);
-
-        console.log('productId and categoryId - ', productId, toCategoryId);
+        // console.log('productId and categoryId - ', productId, toCategoryId);
 
         try {
-            console.log('productId and categoryId', productId, toCategoryId);
             // Update the product category with categoryId instead of categoryName
             await updateCategory(productId, toCategoryId);
-
             // Re-fetch categories/products to reflect changes
             fetchProducts();
+            
         } catch (error) {
             console.error("Error updating product category:", error);
         }
