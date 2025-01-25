@@ -131,7 +131,7 @@ The project is structured as follows:
    ```
 
 3. **Configure environment variables**:
-   Create a `.env.local` file for Next.js and add the following:
+   Create a `.env` file for Next.js and add the following:
    - `NEXT_PUBLIC_API_URL`: [URL of the backend API - http://localhost:8080/api](http://localhost:8080/api)
 
 4. **Run the frontend server**:
