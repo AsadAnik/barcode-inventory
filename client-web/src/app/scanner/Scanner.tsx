@@ -15,7 +15,7 @@ const BarcodeScanner: React.FC = () => {
     const [postProductToServer, productServerData] = usePostProduct();
     const barcodeCache = useRef<Set<string>>(new Set()); // Caches barcodes to avoid duplicate requests
 
-    console.log("productServerData.data: ------- ", productServerData.data);
+    // console.log("productServerData.data: ------- ", productServerData.data);
 
     // Debounced handler for fetching product details
     const handleFetchProductDetails = debounce(async (barcode: string) => {

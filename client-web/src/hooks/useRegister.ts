@@ -27,7 +27,7 @@ const useRegister = () => {
 
         try {
             const response = await axiosApiClient.post('/auth/register', userInfo);
-            console.log('RESPONSE FOR LOGIN HERE - ', response);
+            // console.log('RESPONSE FOR LOGIN HERE - ', response);
             toast.success('Registered successful');
             setData({ ...data, result: response.data, loading: false, error: false });
             router.push('/login');

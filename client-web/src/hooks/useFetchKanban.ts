@@ -10,7 +10,7 @@ const useFetchProducts = () => {
         try {
             setLoading(true);
             const response = await axiosApiClient.get('/categories/kanban');
-            console.log('RESPONSE - ', response.data);
+            // console.log('RESPONSE - ', response.data);
             setData(response.data.kanbanList);
 
         } catch (error) {

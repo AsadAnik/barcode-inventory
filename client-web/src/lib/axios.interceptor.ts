@@ -9,14 +9,14 @@ const apiClient = axios.create({
 
 // Intercept request to add access token to headers
 apiClient.interceptors.request.use(async (config) => {
-  console.log('Cookies:', document.cookie); // Debug cookies
+  // console.log('Cookies:', document.cookie); // Debug cookies
 
   const token = document.cookie
     .split('; ')
     .find((row) => row.startsWith('accessToken='))
     ?.split('=')[1];
 
-  console.log('Access Token:', token); // Debug extracted token
+  // console.log('Access Token:', token); // Debug extracted token
 
 
   if (token) {
