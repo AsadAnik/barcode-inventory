@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   // Check if the user has an accessToken
   const accessToken = request.cookies.get('accessToken')?.value;
   // Define protected routes (adjust according to your needs)
-  const protectedRoutes = ['/kanban', '/profile', '/settings', '/scanner'];
+  const protectedRoutes = ['/kanban', '/scanner'];
 
   // If the route requires authentication
   if (protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))) {
@@ -28,5 +28,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/kanban/:path*', '/profile/:path*', '/settings/:path*', '/scanner', '/kanban'], // Protect these routes
+  matcher: ['/scanner', '/kanban'], // Protect these routes
 };

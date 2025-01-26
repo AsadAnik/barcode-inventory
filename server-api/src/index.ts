@@ -16,6 +16,7 @@ connectDB(DB_URI)
         // Listening to Server..
         server.listen(PORT, HOST, () => {
             console.log(`Welcome to -- ${process.env.APP_NAME} -- `);
+            console.log(`${process.env.NODE_ENV} Environment is Running!`);
             console.log(`Server is running on http://${HOST}:${PORT}`);
         });
     })

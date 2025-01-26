@@ -6,7 +6,8 @@ import cookieParser from "cookie-parser";
 // Cors Config ---
 const corsConfig: cors.CorsOptions = {
     credentials: true,
-    origin: true,
+    origin: process.env.NODE_ENV === 'production' ? 'https://barcode-inventory-chi.vercel.app' : '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 
 const middleware: any = [

@@ -40,17 +40,17 @@ class AuthController {
             if (!authLogin.success) return res.status(400).json(authLogin);
 
             const cookieSetOptions = {
-                httpOnly: false, // Optional: remove this if you need client-side access
-                // secure: process.env.NODE_ENV === 'production', // Secure only for HTTPS
+                // httpOnly: false, // Optional: remove this if you need client-side access
+                secure: process.env.NODE_ENV === 'production', // Secure only for HTTPS
                 sameSite: 'Lax', // Set to 'Lax' or 'None' if cross-origin requests are needed
                 path: '/', // Make cookie accessible throughout the domain
-                maxAge: 1000 * 60 * 15, // Example: 15 minutes
+                maxAge: 1000 * 60 * 30, // Example: 30 minutes
             }
 
             // Set Cookie for access token and refresh token
             res.cookie('accessToken', authLogin.data.accessToken, cookieSetOptions);
             res.cookie('refreshToken', authLogin.data.refreshToken, { 
-                ...cookieSetOptions, maxAge: 1000 * 60 * 60 * 24 * 7 
+                ...cookieSetOptions, maxAge: 1000 * 60 * 60 * 24 * 7  // Example: 7 days
             });
 
             res.status(200).json(authLogin);
