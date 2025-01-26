@@ -13,6 +13,10 @@ export function middleware(request: NextRequest) {
   // Define protected routes (adjust according to your needs)
   const protectedRoutes = ['/kanban', '/scanner'];
 
+  // console.log('MY ACCESS TOKEN HERE - ', accessToken);
+  // console.log('MY REQUEST URL - ', request.nextUrl.pathname);
+  // console.log('MY REQUEST MATCHING HERE - ', protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route)));
+
   // If the route requires authentication
   if (protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))) {
     if (!accessToken) {
